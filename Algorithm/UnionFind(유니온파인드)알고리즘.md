@@ -153,3 +153,9 @@ public class unionFindTest {
 
 }
 ```
+
+결과
+```java
+true
+false
+```

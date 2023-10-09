@@ -1,15 +1,14 @@
 import java.util.*;
-
 class Solution {
     int[] parent;
     String[] table;
     List<String> result;
 
     public String[] solution(String[] commands) {
-        parent = new int[2500];
-        table = new String[2500];
+        parent = new int[2501];
+        table = new String[2501];
         result = new ArrayList<>();
-        for (int i = 1; i < 2500; i++) {
+        for (int i = 1; i <= 2500; i++) {
             parent[i] = i;
         }
 
@@ -52,7 +51,7 @@ class Solution {
             if (len == 3) {
                 val1 = cmdArr[1];
                 val2 = cmdArr[2];
-                updateChageValue(val1, val2);
+                updateChangeValue(val1, val2);
             }
             return;
         }
@@ -76,26 +75,22 @@ class Solution {
     private void updateRCvalue(int x, String val) {
         //해당 위치의 parent값과 동일한지 찾기
         table[getParent(x)] = val;
-        // ArrayList<Integer> list = getSameParentList(x);
-        // for(int idx : list){
-        //     table[idx] = val;
-        // }
     }
 
-    private void updateChageValue(String val1, String val2) {
-        ArrayList<Integer> list = getSameValueList(val1);
-        for (int idx : list) {
-            updateRCvalue(idx, val2);
-        }
+    private void updateChangeValue(String val1, String val2) {
+        getSameValueList(val1, val2);
     }
 
     private void mergeTwoRC(int x1, int x2) {
-        String str = null;
+
+        String str;
         if (table[getParent(x1)] != null) {
             str = table[getParent(x1)];
         } else {
             str = table[getParent(x2)];
         }
+        table[getParent(x1)] = null;
+        table[getParent(x2)] = null;
         int idx = unionParent(x1, x2);
         table[idx] = str;
     }
@@ -104,7 +99,7 @@ class Solution {
         String str = table[getParent(x)];
         int t = getParent(x);
 
-        for (int i = 0; i < 2500; i++) {
+        for (int i = 2500; i > 0; i--) {
             if (findParent(t, i)) {
                 //초기화
                 table[i] = null;
@@ -125,27 +120,14 @@ class Solution {
     }
 
 
-    private ArrayList<Integer> getSameValueList(String val) {
-        ArrayList<Integer> list = new ArrayList<>();
+    private void getSameValueList(String val, String val2) {
         for (int i = 0; i < 2500; i++) {
             if (table[i] == null) continue;
             if (table[i].equals(val)) {
-                list.add(i);
+                updateRCvalue(i, val2);
             }
         }
-        return list;
-    }
-
-
-    private ArrayList<Integer> getSameParentList(int x) {
-        ArrayList<Integer> list = new ArrayList<>();
-        for (int i = 0; i < 2500; i++) {
-            if (findParent(x, i)) {
-                list.add(i);
-            }
-        }
-
-        return list;
+        return;
     }
 
     private int getParent(int x) {
@@ -179,7 +161,8 @@ class Solution {
     }
 
     private int makeParentIndex(int r, int c) {
-        return r * 50 + c;
+        return (r-1) * 50 + c;
     }
+
 
 }

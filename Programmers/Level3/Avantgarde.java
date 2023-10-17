@@ -1,59 +1,36 @@
+import java.util.*;
+
 class Solution {
     public int solution(int n) {
-
-        /// DP 문제
+/// DP 문제
         int answer = 1;
         int[] dp = new int[100001];
         dp[0] = 1;
         dp[1] = 1;
-        if(n > 1)
-            dp[2] = 3;
-        if(n > 2)
-            dp[3] = 10;
-        // dp[4] = (dp[1] *4) + (dp[2] * 3) + dp[3]; (2개 포함)
-        // dp[5] =  아래와 같은 모양을 추가할 수 있다. (반대 포함 2개)
-        // dp[6] = 4개 필요
+        if (n > 1) dp[2] = 3;
+        if (n > 2) dp[3] = 10;
+        //2422  2242 4224
+        ArrayList<Integer>[] memo = new ArrayList[3];
+        memo[0] = new ArrayList<>(List.of(2, 6, 12, 32));
+        memo[1] = new ArrayList<>(List.of(2, 4, 16, 36));
+        memo[2] = new ArrayList<>(List.of(4, 6, 12, 52));
 
-        // ㅡㅡㅡ ㅡㄱ
-        // ㅣ ㅡㅡㅡ ㅣ
-        // ㄴㅡ ㅡㅡㅡ
-        //
-        // ⎮   ㅡㅡㅡ  2개
-        // ㄴㅡ  ㅡ
-        // ㅡㅡㅡ   ⏋
 
-        //
+        // 4
+        // 2
+        // 2
 
-        if(n > 3){
-            int one = 0;
-            int two = 0;
-            int three = 0;
-            int four = 0;
-            int five = 0;
-            int six = 0;
-            for(int i = 4; i <= n; i++){
-                one = (dp[i-3] * 5)%1000000007;
-                two = (dp[i-2] * 2)%1000000007;
-                three = (dp[i-1])%1000000007;
-                if(i % 4 == 0){
-                    four = (dp[i-4] * 2)%1000000007;
-                    five = 0;
-                    six = 0;
-                }
-                if(i % 5 == 0){
-                    four = 0;
-                    five = (dp[i-5] * 2)%1000000007;
-                    six = 0;
-                }
-                if(i % 6 == 0){
-                    four = 0;
-                    five = 0;
-                    six = (dp[i-6] * 4)%1000000007;
-                }
-                dp[i] = (one+two+three+four + five + six)%1000000007;
-            }
+        for (int i = 4; i <= n; i++) {
+            int now = (i - 1) % 3;
+            int t1 = (now + 1) % 3;
+            int t2 = (now + 2) % 3;
+
+            dp[i] = (dp[i - 1] + dp[i - 2] * 2 + dp[i - 3] * 5 + memo[now].get(i - 4)) % 1000000007;
+
+            memo[now].add((memo[now].get(i - 1) + dp[i] * 4) % 1000000007);
+            memo[t1].add((memo[t1].get(i - 1) + dp[i] * 2) % 1000000007);
+            memo[t2].add((memo[t2].get(i - 1) + dp[i] * 2) % 1000000007);
         }
-        answer = dp[n];
-        return answer;
+        return dp[n];
     }
 }
